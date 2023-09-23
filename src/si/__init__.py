@@ -1,9 +1,9 @@
-__author__ = "João Correia"
-__credits__ = ["João Correia, Fernando Cruz", "Vítor Pereira"]
+__author__ = "Gonçalo Cardoso"
+__credits__ = ["Gonçalo Cardoso"]
 __license__ = "Apache License 2.0"
 __version__ = "0.0.1"
-__maintainer__ = "João Correia"
-__email__ = "jfscorreia95@gmail.com"
+__maintainer__ = "Gonçalo Cardoso"
+__email__ = "goncalocardoso2016@gmail.com"
 
 # -----------------------------------------------------------------------------------
 # This package is heavily inspired and adapted from
