@@ -65,7 +65,7 @@ class Dataset:
         else:
             raise ValueError("Dataset does not have a label")
 
-    def get_mean(self) -> np.ndarray:
+    def get_mean(self, subset = None) -> np.ndarray:
         """
         Returns the mean of each feature
         Returns
@@ -125,6 +125,45 @@ class Dataset:
             "var": self.get_variance()
         }
         return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
+
+    def dropna(self):
+        lines = np.isnan(self.X).any(axis=1)
+        self.X = self.X[~lines]
+
+        if self.has_label():
+            self.y = self.y[~lines]
+
+        return self
+    
+    def fillna(self, value):
+        if isinstance(value, str):
+            if value == "mean":
+                value_to_fill = np.nanmean(self.X)
+            elif value == "median":
+                value_to_fill = np.nanmedian(self.X)
+            else:
+                raise ValueError("Invalid value. Use a float or 'mean' or 'median'.")
+        elif isinstance(value, (int, float)):
+            value_to_fill = float(value)
+        else:
+            raise ValueError("Invalid value. Use a float or 'mean' or 'median'.")
+
+        self.X[np.isnan(self.X)] = value_to_fill
+
+        return self
+
+    def remove_by_index(self, index):
+        if index < 0 or index >= len(self.X):
+            raise ValueError("Invalid index. Index out of range.")
+
+        self.X = np.delete(self.X, index, axis=0)
+
+        if self.has_label():
+            self.y = np.delete(self.y, index, axis=0)
+
+        return self
+
+# Example usage:
 
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
