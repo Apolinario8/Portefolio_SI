@@ -126,16 +126,43 @@ class Dataset:
         }
         return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
 
-    def dropna(self):
+    def dropna(self) -> 'Dataset':
+        """
+        Remove rows with NaN values from the dataset.
+
+        This method removes rows containing NaN (Not a Number) values from the dataset.
+
+        Returns
+        -------
+        Dataset
+        Returns the updated Dataset object after removing rows with NaN values.
+        """
         lines = np.isnan(self.X).any(axis=1)
         self.X = self.X[~lines]
 
         if self.has_label():
             self.y = self.y[~lines]
-
         return self
     
-    def fillna(self, value):
+    def fillna(self, value) -> 'Dataset':
+        """ 
+        Fill the NaN (Not a Number) values in the dataset with a specified value.
+
+        This method replaces all occurrences of NaN values in the features (self.X) with the specified fill value. 
+
+        Parameters
+        ----------
+        value : str or float
+            The value to fill NaN entries with. If `value` is a string, it can be one of the following options:
+            - "mean": Fill NaN values with the mean of the non-NaN elements in the dataset.
+            - "median": Fill NaN values with the median of the non-NaN elements in the dataset.
+            If `value` is a float, fill NaN values with this specific numerical value.
+
+        Returns
+        -------
+        Dataset
+        Returns the updated Dataset object after filling NaN values.
+        """
         if isinstance(value, str):
             if value == "mean":
                 value_to_fill = np.nanmean(self.X)
@@ -149,10 +176,23 @@ class Dataset:
             raise ValueError("Invalid value. Use a float or 'mean' or 'median'.")
 
         self.X[np.isnan(self.X)] = value_to_fill
-
         return self
 
-    def remove_by_index(self, index):
+    def remove_by_index(self, index) -> 'Dataset':
+        """
+        Remove a specific row from the dataset based on the given index.
+        This method removes the row at the specified index from the features (self.X) and, if present, from the labels (self.y) of the dataset.
+
+        Parameters
+        ----------
+        index : int
+            The index of the row to be removed.
+
+        Returns
+        -------
+        Dataset
+        Returns the updated Dataset object after removing the specified row.
+        """
         if index < 0 or index >= len(self.X):
             raise ValueError("Invalid index. Index out of range.")
 
@@ -160,7 +200,6 @@ class Dataset:
 
         if self.has_label():
             self.y = np.delete(self.y, index, axis=0)
-
         return self
 
 # Example usage:

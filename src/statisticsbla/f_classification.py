@@ -1,9 +1,10 @@
 from typing import Tuple, Union
-
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
 import numpy as np
 from scipy import stats
 
-from si.data.dataset import Dataset
+from data.dataset import Dataset
 
 
 def f_classification(dataset: Dataset) -> Union[Tuple[np.ndarray, np.ndarray],

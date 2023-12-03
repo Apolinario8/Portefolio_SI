@@ -1,6 +1,7 @@
 import numpy as np
-
-from si.data.dataset import Dataset
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+from data.dataset import Dataset
 
 
 class VarianceThreshold:
@@ -11,8 +12,7 @@ class VarianceThreshold:
     Parameters
     ----------
     threshold: float
-        The threshold value to use for feature selection. Features with a
-        training-set variance lower than this threshold will be removed.
+        The threshold value to use for feature selection.
 
     Attributes
     ----------
@@ -23,7 +23,6 @@ class VarianceThreshold:
     def __init__(self, threshold: float = 0.0):
         """
         Variance Threshold feature selection.
-        Features with a training-set variance lower than this threshold will be removed from the dataset.
 
         Parameters
         ----------
@@ -34,10 +33,7 @@ class VarianceThreshold:
         if threshold < 0:
             raise ValueError("Threshold must be non-negative")
 
-        # parameters
         self.threshold = threshold
-
-        # attributes
         self.variance = None
 
     def fit(self, dataset: Dataset) -> 'VarianceThreshold':
@@ -89,8 +85,7 @@ class VarianceThreshold:
 
 
 if __name__ == '__main__':
-    from si.data.dataset import Dataset
-
+    from data.dataset import Dataset
     dataset = Dataset(X=np.array([[0, 2, 0, 3],
                                   [0, 1, 4, 3],
                                   [0, 1, 1, 3]]),
@@ -101,4 +96,6 @@ if __name__ == '__main__':
     selector = VarianceThreshold()
     selector = selector.fit(dataset)
     dataset = selector.transform(dataset)
+    a = selector.fit_transform(dataset)
     print(dataset.features)
+    print(a.shape())

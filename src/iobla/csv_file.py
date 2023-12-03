@@ -1,6 +1,7 @@
 import pandas as pd
-
-from si.data.dataset import Dataset
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+from data.dataset import Dataset
 
 
 def read_csv(filename: str,
