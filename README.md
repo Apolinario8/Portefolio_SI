@@ -1,6 +1,7 @@
 # Sistemas Inteligentes para a Bioinformática
+--> Evaluation on src\Exercises.ipynb
 
-## Curricular Unit
+## Curricular Unit 
 Mestrado em Bioinformática, Universidade do Minho, 2023-2024.
 
 
