@@ -1,7 +1,8 @@
-from typing import Callable
-
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
 import numpy as np
 
+from typing import Callable
 from data.dataset import Dataset
 from statisticsbla.euclidean_distance import euclidean_distance
 

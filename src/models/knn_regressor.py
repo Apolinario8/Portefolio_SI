@@ -1,4 +1,4 @@
-from ctypes import Union
+from typing import Callable, Union
 
 import numpy as np
 
@@ -8,12 +8,12 @@ from statisticsbla.euclidean_distance import euclidean_distance
 
 
 class KNNRegressor:
-    def __init__(self, k: int, distance: euclidean_distance = euclidean_distance):
+    def __init__(self, k: int, distance: Callable = euclidean_distance):
         self.k = k
         self.distance = distance
         self.dataset = None
 
-    def fit(self, dataset: Dataset):
+    def fit(self, dataset: Dataset) -> 'KNNRegressor':
         """
         Stores the dataset.
         :param dataset: Dataset object
@@ -22,7 +22,7 @@ class KNNRegressor:
         self.dataset = dataset
         return self
 
-    def _get_closet_label(self, x: np.ndarray):
+    def _get_closet_label(self, sample: np.ndarray) -> Union[int, str]:
         """
         Calculates the mean of the class with the highest frequency.
         :param x: Array of samples.
@@ -30,26 +30,24 @@ class KNNRegressor:
         """
 
         # Calculates the distance between the samples and the dataset
-        distances = self.distance(x, self.dataset.x)
+        distances = self.distance(sample, self.dataset.X)
 
         # Sort the distances and get indexes
-        knn = np.argsort(distances)[:self.k]  # get the first k indexes of the sorted distances array
-        knn_labels = self.dataset.y[knn]
+        k_nearest_neighbors = np.argsort(distances)[:self.k]  # get the first k indexes of the sorted distances array
 
-        # Computes the mean of the matching classes
-        match_class_mean = np.mean(knn_labels)
+        # get the labels of the k nearest neighbors
+        k_nearest_neighbors_labels = self.dataset.y[k_nearest_neighbors]
 
-        # Sorts the classes with the highest mean
-        # high_freq_class = np.argsort(match_class_mean)[:self.k]
+        # Calculate average
+        return np.mean(k_nearest_neighbors_labels)
 
-        return match_class_mean
 
     def predict(self, dataset: Dataset) -> np.ndarray:
         """
         Predicts the class with the highest frequency
         :return: Class with the highest frequency.
         """
-        return np.apply_along_axis(self._get_closet_label, axis=1, arr=dataset.x)
+        return np.apply_along_axis(self._get_closet_label, axis=1, arr=dataset.X)
 
     def score(self, dataset: Dataset) -> float:
         """

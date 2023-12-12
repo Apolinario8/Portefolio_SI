@@ -77,18 +77,17 @@ class PCA:
         PCA
             The PCA object.
         """
-        # Step 1: Center the data
         self.mean = np.mean(X, axis=0)
         centered_X = X - self.mean
         
-        # Step 2: Calculate SVD
         U, S, VT = np.linalg.svd(centered_X, full_matrices=False)
         
-        # Step 3: Infer Principal Components
         self.components = VT[:self.n_components].T
         
-        # Step 4: Infer Explained Variance
-        self.explained_variance = (S[:self.n_components] ** 2) / (X.shape[0] - 1)
+        self.explained_variance = (S[:self.n_components] ** 2) / (X.shape[0])
+
+        total_variance = np.sum(S**2)
+        self.explained_variance_ratio = (S[:self.n_components] ** 2) / total_variance
         
         return self
     
@@ -106,11 +105,11 @@ class PCA:
         np.ndarray
             Reduced dataset, shape (n_samples, n_components).
         """
-         # Step 1: Center the data
         centered_X = X - self.mean
         
-        # Step 2: Calculate reduced X
         X_reduced = np.dot(centered_X, self.components)
+
+        return X_reduced
     
     def fit_transform(self, X: np.ndarray) -> np.ndarray:
         """

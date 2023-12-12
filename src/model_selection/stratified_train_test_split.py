@@ -1,6 +1,6 @@
 from typing import Tuple
 import numpy as np
-from data.dataset import Dataset
+from data.dataset import Dataset                        #Distribuição de classes é mantida
 
 def stratified_train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int = 42) -> Tuple[Dataset, Dataset]:
     """
@@ -31,8 +31,11 @@ def stratified_train_test_split(dataset: Dataset, test_size: float = 0.2, random
     
     # Loop through unique labels
     for label in unique_labels:
+        # Convert label to its corresponding index
+        label_index = np.where(unique_labels == label)[0][0]
+        
         # Calculate the number of test samples for the current class
-        num_test_samples = int(label_counts[label] * test_size)
+        num_test_samples = int(label_counts[label_index] * test_size)
         
         # Shuffle and select indices for the current class
         class_indices = np.where(dataset.y == label)[0]
@@ -45,9 +48,7 @@ def stratified_train_test_split(dataset: Dataset, test_size: float = 0.2, random
         train_indices.extend(class_indices[num_test_samples:])
     
     # Create training and testing datasets
-    train_data = Dataset(dataset.X[train_indices], dataset.y[train_indices],
-                         features=dataset.features, label=dataset.label)
-    test_data = Dataset(dataset.X[test_indices], dataset.y[test_indices],
-                        features=dataset.features, label=dataset.label)
+    train_data = Dataset(dataset.X[train_indices], dataset.y[train_indices], features=dataset.features, label=dataset.label)
+    test_data = Dataset(dataset.X[test_indices], dataset.y[test_indices], features=dataset.features, label=dataset.label)
     
     return train_data, test_data

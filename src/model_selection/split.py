@@ -27,7 +27,7 @@ def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int
     """
     # set random state
     np.random.seed(random_state)
-    # get dataset size
+    # get dataset size (rows)
     n_samples = dataset.shape()[0]
     # get number of samples in the test set
     n_test = int(n_samples * test_size)

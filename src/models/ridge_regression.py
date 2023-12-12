@@ -1,5 +1,8 @@
 import numpy as np
 
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+
 from data.dataset import Dataset
 from metrics.mse import mse
 

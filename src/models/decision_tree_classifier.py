@@ -1,5 +1,8 @@
 from typing import Literal, Tuple, Union
 
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+
 import numpy as np
 
 from data.dataset import Dataset
@@ -293,7 +296,7 @@ if __name__ == '__main__':
     from iobla.csv_file import read_csv
     from model_selection.split import train_test_split
 
-    data = read_csv('../../../datasets/iris/iris.csv', sep=',', features=True, label=True)
+    data = read_csv(r"..\datasets\iris\iris.csv", sep = ",", features = "True", label = True)
     train, test = train_test_split(data, test_size=0.33, random_state=42)
     model = DecisionTreeClassifier(min_sample_split=3, max_depth=3, mode='gini')
     model.fit(train)

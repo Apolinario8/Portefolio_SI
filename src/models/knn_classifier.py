@@ -1,3 +1,6 @@
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+
 from typing import Callable, Union
 
 import numpy as np
@@ -124,11 +127,14 @@ class KNNClassifier:
 
 if __name__ == '__main__':
     # import dataset
+    import os
+    os.chdir(r"C:\Users\gonca\Documents\GitHub\Portefolio_SI\src")
     from data.dataset import Dataset
     from model_selection.split import train_test_split
+    from iobla.csv_file import read_csv
 
     # load and split the dataset
-    dataset_ = Dataset.from_random(600, 100, 2)
+    dataset_ = read_csv(r"..\datasets\iris\iris.csv", sep = ",", features = "True", label = True)
     dataset_train, dataset_test = train_test_split(dataset_, test_size=0.2)
 
     # initialize the KNN classifier
