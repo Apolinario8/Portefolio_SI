@@ -1,3 +1,6 @@
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+
 import copy
 from abc import abstractmethod, ABC
 
@@ -223,7 +226,9 @@ class Dropout(Layer):
             The dropout rate, between 0 and 1.
         """
         super().__init__()
+
         self.probability = probability
+        
         self.mask = None
         self.input = None
         self.output = None
@@ -244,14 +249,14 @@ class Dropout(Layer):
         numpy.ndarray
             The output of the layer.
         """
+        self.input = input
+
         if training:
-            # Generate a binary mask based on the dropout probability
-            self.mask = (np.random.rand(*input.shape) > self.probability).astype(float)
-            # Scale the input by the inverted mask to account for dropout
-            self.output = input * self.mask / (1 - self.probability)
+            scaling_factor = 1 / (1 - self.probability)
+            self.mask = np.random.binomial(1, 1 - self.probability, size=input.shape)
+            self.output = input * self.mask * scaling_factor
             return self.output
         else:
-            # During inference, do nothing (return the input)
             return input
 
     def backward_propagation(self, output_error: np.ndarray) -> np.ndarray:
@@ -268,9 +273,8 @@ class Dropout(Layer):
         numpy.ndarray
             The input error of the layer.
         """
-        # Multiply the output error by the mask to zero out certain elements
-        input_error = output_error * self.mask
-        return input_error
+
+        return output_error * self.mask
 
     def output_shape(self) -> tuple:
         """

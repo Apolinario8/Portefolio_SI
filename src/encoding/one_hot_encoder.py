@@ -46,15 +46,3 @@ class OneHotEncoder():
             decoded_sequence = ''.join(self.index_to_char[np.argmax(row)] for row in one_hot_matrix)
             decoded_sequences.append(decoded_sequence.rstrip(self.padder))
         return decoded_sequences
-
-# Example usage:
-data = ['hello', 'world', 'python']
-encoder = OneHotEncoder(padder='_', max_length=6)
-encoded_data = encoder.fit_transform(data)
-decoded_data = encoder.inverse_transform(encoded_data)
-
-print("Original Data:", data)
-print("Encoded Data:")
-for seq, encoded_seq in zip(data, encoded_data):
-    print(f"{seq} =>\n{encoded_seq}")
-print("Decoded Data:", decoded_data)

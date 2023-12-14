@@ -84,9 +84,11 @@ class Adam(Optimizer):
             A small constant for numerical stability. Defaults to 1e-8.
         """
         super().__init__(learning_rate)
+        
         self.beta_1 = beta_1
         self.beta_2 = beta_2
         self.epsilon = epsilon
+
         self.m = None
         self.v = None
         self.t = 0

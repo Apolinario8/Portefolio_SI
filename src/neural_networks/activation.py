@@ -1,3 +1,6 @@
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+                
 from abc import abstractmethod
 from typing import Union
 
@@ -263,7 +266,5 @@ class SoftmaxActivation(ActivationLayer):
         numpy.ndarray
             The derivative of the activation function.
         """
-        # Softmax derivative is not implemented here, as it is often not needed
-        # in the context of backpropagation for the softmax layer. It is usually
-        # combined with the cross-entropy loss derivative in the output layer.
-        raise NotImplementedError("Derivative of Softmax activation is not explicitly needed for backpropagation.")
+
+        return self.activation_function(input) * (1 - self.activation_function(input))

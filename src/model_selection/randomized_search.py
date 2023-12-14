@@ -1,59 +1,40 @@
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+
 from typing import Dict, Tuple, Callable, Union
-
 import numpy as np
-
 from data.dataset import Dataset
-from model_selection.cross_validate import cross_validate
-
-Num = Union[int, float]
+from model_selection.cross_validate import k_fold_cross_validation
 
 
-def randomized_search_cv(model,
-                         dataset: Dataset,
-                         parameter_distribution: Dict[str, Tuple],
-                         scoring: Callable = None,
-                         cv: int = 3,
-                         n_iter: int = 10,
-                         test_size: float = 0.3) -> Dict[str, Tuple[str, Num]]:
-    scores = {
-        'parameters': [],
-        'seed': [],
-        'train': [],
-        'test': []
-    }
+def randomized_search_cv(model, dataset, hyperparameter_grid, scoring=None, cv=5, n_iter=None, random_state=None):
+   
+    for parameter in hyperparameter_grid:
+            if not hasattr(model, parameter):
+                raise AttributeError(f"Model {model} does not have parameter {parameter}.") 
 
-    #  checks if parameters exist in the model
-    for parameter in parameter_distribution:
-        if not hasattr(model, parameter):
-            raise AttributeError(f"The {model} does not have parameter {parameter}.")
+    results = {'scores': [], 'hyperparameters': []}
 
-    #  sets n_iter parameter combinations
-    for i in range(n_iter):
-
-        # set the random seed
-        random_state = np.random.randint(0, 1000)
-
-        # store the seed
-        scores['seed'].append(random_state)
-
-        # parameter configuration
+    for _ in range(n_iter):
         parameters = {}
+        for key, values in hyperparameter_grid.items():
+            # Choose a different random value for each hyperparameter
+            parameters[key] = np.random.choice(values)
 
-        # set the parameters
-        for parameter, value in parameter_distribution.items():
-            # set the combination of parameter and its values to the model
-            parameters[parameter] = np.random.choice(value)  # choose a random value from the distribution
+        # Set the hyperparameters in the model
+        for key, value in parameters.items():
+            setattr(model, key, value)
 
-        # set the parameters to the model
-        for parameter, value in parameters.items():
-            setattr(model, parameter, value)
+        # Cross validate the model
+        score = k_fold_cross_validation(model=model, dataset=dataset, scoring=scoring, cv=cv)
 
-        # performs cross_validation with the combination
-        score = cross_validate(model=model, dataset=dataset, scoring=scoring, cv=cv, test_size=test_size)
+        # Record the score and hyperparameters for this iteration
+        results['scores'].append(np.mean(score))
+        results['hyperparameters'].append(parameters)
 
-        # stores the parameter combination and the obtained scores
-        scores['parameters'].append(parameters)
-        scores['train'].append(score['train'])
-        scores['test'].append(score['test'])
+    # Identify the best score and best hyperparameters
+    best_index = np.argmax(results['scores'])
+    results['best_hyperparameters'] = results['hyperparameters'][best_index]
+    results['best_score'] = np.max(results['scores'])
 
-    return scores
+    return results

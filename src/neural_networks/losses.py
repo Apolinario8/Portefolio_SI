@@ -1,3 +1,6 @@
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+
 from abc import abstractmethod
 
 import numpy as np
