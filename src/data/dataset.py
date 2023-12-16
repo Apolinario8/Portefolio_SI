@@ -137,11 +137,11 @@ class Dataset:
         Dataset
         Returns the updated Dataset object after removing rows with NaN values.
         """
-        lines = np.isnan(self.X).any(axis=1)
-        self.X = self.X[~lines]
+        rows = np.isnan(self.X).any(axis=1)
+        self.X = self.X[~rows]
 
         if self.has_label():
-            self.y = self.y[~lines]
+            self.y = self.y[~rows]
         return self
     
     def fillna(self, value) -> 'Dataset':

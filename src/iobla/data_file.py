@@ -1,6 +1,8 @@
-import numpy as np
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
 
-from si.data.dataset import Dataset
+from data.dataset import Dataset
+import numpy as np
 
 
 def read_data_file(filename: str,

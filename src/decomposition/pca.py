@@ -59,6 +59,7 @@ class PCA:
             Number of components to keep.
         """
         self.n_components = n_components
+
         self.mean = None
         self.components = None
         self.explained_variance = None
@@ -82,11 +83,15 @@ class PCA:
         
         U, S, VT = np.linalg.svd(centered_X, full_matrices=False)
         
-        self.components = VT[:self.n_components].T
-        
-        self.explained_variance = (S[:self.n_components] ** 2) / (X.shape[0])
+        self.components = VT[:self.n_components]
 
-        total_variance = np.sum(S**2)
+        for i in range(self.n_components):   #making sure the components have the same sign as the sklearn implementation (first element of each component is positive) --> not necessary
+            if np.sum(self.components[i]) < 0:
+                self.components[i] = -self.components[i]
+        
+        self.explained_variance = (S[:self.n_components] ** 2) / (X.shape[0] - 1)
+
+        total_variance = np.sum(S ** 2)
         self.explained_variance_ratio = (S[:self.n_components] ** 2) / total_variance
         
         return self
@@ -107,7 +112,7 @@ class PCA:
         """
         centered_X = X - self.mean
         
-        X_reduced = np.dot(centered_X, self.components)
+        X_reduced = np.dot(centered_X, self.components.T) #transposta aqui para dar igual ao sklearn
 
         return X_reduced
     
