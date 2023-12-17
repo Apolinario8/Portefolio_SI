@@ -175,6 +175,7 @@ class RidgeRegression:
 if __name__ == '__main__':
     # import dataset
     from data.dataset import Dataset
+    from sklearn.linear_model import Ridge
 
     # make a linear dataset
     X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
@@ -199,3 +200,5 @@ if __name__ == '__main__':
     # predict
     y_pred_ = model.predict(Dataset(X=np.array([[3, 5]])))
     print(f"Predictions: {y_pred_}")
+
+    

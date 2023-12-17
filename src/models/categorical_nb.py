@@ -1,6 +1,7 @@
 import numpy as np
 from typing import List
 
+
 class CategoricalNB:
     def __init__(self, smoothing: float = 1.0):
         """
@@ -12,6 +13,7 @@ class CategoricalNB:
             Laplace smoothing parameter to avoid zero probabilities.
         """
         self.smoothing = smoothing
+
         self.class_prior = None
         self.feature_probs = None
 
@@ -29,35 +31,33 @@ class CategoricalNB:
         self: CategoricalNB
             The fitted model.
         """
+        # 1. Define n_samples, n_features, n_classes
         n_samples, n_features = dataset.X.shape
         n_classes = len(np.unique(dataset.y))
 
-        # Initialize counts and probabilities
-        class_counts = np.zeros(n_classes)
-        feature_counts = np.zeros((n_classes, n_features))
-        class_prior = np.zeros(n_classes)
+        # 2. Initialize class_counts, feature_counts, and class_prior
+        self.class_counts = np.zeros(n_classes)
+        self.feature_counts = np.zeros((n_classes, n_features))
+        self.class_prior = np.zeros(n_classes)
 
-        # Compute counts
-        for i in range(n_samples):
-            class_counts[dataset.y[i]] += 1
-            feature_counts[dataset.y[i]] += dataset.X[i]
+        # 3. Compute class_counts, feature_counts, and class_prior
+        for c in range(n_classes):
+            class_mask = (dataset.y == c)
+            self.class_counts[c] = np.sum(class_mask)
+            self.feature_counts[c, :] = np.sum(dataset.X[class_mask, :], axis=0)
 
-        # Apply Laplace smoothing
-        class_counts += self.smoothing * n_classes
-        feature_counts += self.smoothing
+        self.class_prior = self.class_counts / n_samples
 
-        # Compute class_prior
-        class_prior = class_counts / (n_samples + self.smoothing * n_classes)
+        # 4. Apply Laplace smoothing
+        self.class_counts += self.smoothing * n_classes
+        self.feature_counts += self.smoothing
 
-        # Compute feature_probs
-        feature_probs = feature_counts / class_counts[:, np.newaxis]
-
-        self.class_prior = class_prior
-        self.feature_probs = feature_probs
+        # 5. Compute feature_probs
+        self.feature_probs = self.feature_counts / self.class_counts[:, np.newaxis]
 
         return self
 
-    def predict(self, dataset):
+    def predict(self, X_test):
         """
         Predict the class labels for a given set of samples.
 
@@ -71,15 +71,18 @@ class CategoricalNB:
         predictions: np.ndarray
             The predicted values for the testing dataset.
         """
-        predictions = []
+        X_test = np.array(X_test)
 
-        for i in range(len(dataset.X)):
-            class_probs = np.prod(dataset.X[i] * self.feature_probs + (1 - dataset.X[i]) * (1 - self.feature_probs), axis=1) * self.class_prior
-            predicted_class = np.argmax(class_probs)
-            predictions.append(predicted_class)
+        # Compute the probability for each class for each sample
+        class_probs = np.zeros((X_test.shape[0], len(self.class_prior)))
 
-        return np.array(predictions)
+        for c in range(len(self.class_prior)):
+            class_probs[:, c] = np.prod(X_test * self.feature_probs[c] + (1 - X_test) * (1 - self.feature_probs[c]), axis=1) * self.class_prior[c]
 
+        # Pick the class with the highest probability as the predicted class
+        predictions = np.argmax(class_probs, axis=1)
+
+        return predictions
     def score(self, dataset):
         """
         Calculate the accuracy between estimated classes and actual ones.
