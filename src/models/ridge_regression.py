@@ -1,7 +1,7 @@
-import numpy as np
-
 import sys
 sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
+
+import numpy as np
 
 from data.dataset import Dataset
 from metrics.mse import mse
@@ -107,7 +107,7 @@ class RidgeRegression:
             penalization_term = self.theta * (1 - self.alpha * (self.l2_penalty / m))
 
             # updating the model parameters
-            self.theta = (self.theta * penalization_term) - gradient
+            self.theta = penalization_term - gradient
             self.theta_zero = self.theta_zero - (self.alpha * (1 / m)) * np.sum(y_pred - dataset.y)
 
             # compute the cost
@@ -175,7 +175,6 @@ class RidgeRegression:
 if __name__ == '__main__':
     # import dataset
     from data.dataset import Dataset
-    from sklearn.linear_model import Ridge
 
     # make a linear dataset
     X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
@@ -200,5 +199,3 @@ if __name__ == '__main__':
     # predict
     y_pred_ = model.predict(Dataset(X=np.array([[3, 5]])))
     print(f"Predictions: {y_pred_}")
-
-    

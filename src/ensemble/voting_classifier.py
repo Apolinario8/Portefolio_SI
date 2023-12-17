@@ -1,5 +1,7 @@
-import numpy as np
+import sys
+sys.path.append(r'C:\Users\gonca\Documents\GitHub\Portefolio_SI\src')
 
+import numpy as np
 from data.dataset import Dataset
 from metrics.accuracy import accuracy
 
