@@ -112,7 +112,7 @@ class PCA:
         """
         centered_X = X - self.mean
         
-        X_reduced = np.dot(centered_X, self.components.T) #transposta aqui para dar igual ao sklearn
+        X_reduced = np.dot(centered_X, self.components.T) 
 
         return X_reduced
     

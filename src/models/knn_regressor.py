@@ -8,6 +8,23 @@ from statisticsbla.euclidean_distance import euclidean_distance
 
 
 class KNNRegressor:
+    """
+    The k-Nearst Neighbors regressor is a machine learning model that predicts the value of new samples based on a similarity measure (e.g., distance functions).
+    This algorithm predicts the value of new samples by looking at the values of the k-nearest samples in the training data.  
+    The predicted value is the average of the values of the k-nearest samples. 
+
+    Parameters
+    ----------
+    k: int
+        The number of nearest neighbors to use
+    distance: Callable
+        The distance function to use
+
+    Attributes
+    ----------
+    dataset: np.ndarray
+        The training data
+    """
     def __init__(self, k: int, distance: Callable = euclidean_distance):
         self.k = k
         self.distance = distance

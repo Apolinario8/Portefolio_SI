@@ -40,6 +40,7 @@ pyth
         """
         self.k = k
         self.score_func = score_func
+        
         self.F = None
         self.p = None
 
